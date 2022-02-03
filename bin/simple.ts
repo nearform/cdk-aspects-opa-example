@@ -16,10 +16,8 @@ Tags.of(stack).add('active', 'yes')
 Tags.of(stack).add('hasBudget', 'yes')
 
 stack.node.addMetadata("repoTag", "v0.0.0")
-stack.node.addMetadata("errorBudget", 100)
-
-Aspects.of(stack).add(new OpaChecker('MockBin', 'https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7'));
-Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
-Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
+stack.node.addMetadata("errorBudget", 0.1)
 
 Aspects.of(stack).add(new BucketEncryptionChecker());
+Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));

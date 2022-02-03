@@ -81,7 +81,7 @@ test('Change Policy Allowed', async () => {
   let stack = new Simple.SimpleStack(app, 'MyTestStack');
 
   stack.node.addMetadata("repoTag", "test-opa-change")
-  stack.node.addMetadata("errorBudget", 100)
+  stack.node.addMetadata("errorBudget", 0.1)
 
   cdk.Aspects.of(stack).add(new OpaChecker('MockBin', 'https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7'));
   cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));

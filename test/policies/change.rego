@@ -1,6 +1,6 @@
-import future.keywords.in
-
 package policy.change
+
+import future.keywords.in
 
 default allow = false
 allow {
@@ -10,5 +10,5 @@ allow {
 
 	some errorBudget in input.stackMetadata
 	errorBudget.type == "errorBudget"
-	errorBudget.data > 10
+	errorBudget.data > 0
 }
