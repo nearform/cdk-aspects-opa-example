@@ -25,14 +25,36 @@ test('S3 Bucket Not Created Without Encryption', () => {
   Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'AWS::S3::Bucket::NoEncryption');
 });
 
-test('OPA Bundle Test', () => {
+test('OPA Bundle Test Not Allowed', async () => {
   
+  //expect.assertions(1);
+
   const app = new cdk.App();
+  
   // WHEN
   let stack = new Simple.SimpleStack(app, 'MyTestStack');
 
   cdk.Aspects.of(stack).add(new OpaChecker());
 
   // THEN  
-  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::NotAllowed');  
+  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::NotAllowed')
+});
+
+
+test('OPA Bundle Test Allowed', async () => {
+  
+  //expect.assertions(1);
+
+  const app = new cdk.App();
+  
+  // WHEN
+  let stack = new Simple.SimpleStack(app, 'MyTestStack');
+
+  cdk.Tags.of(stack).add('active', 'yes')
+  cdk.Tags.of(stack).add('hasBudget', 'yes')
+
+  cdk.Aspects.of(stack).add(new OpaChecker());
+
+  // THEN  
+  Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::Allowed')
 });
