@@ -1,5 +1,8 @@
 # CDK Aspects and Open Policy Manager
-Aspects are a way to change constructs in a given scope based on any aspect of that node.  CDK Aspects implements the Visitor pattern using the interface IAspect. 
+[AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html) and 
+ [Aspects](https://docs.aws.amazon.com/cdk/v2/guide/aspects.html) are a way to change constructs in a given scope based on any aspect of that node.  CDK Aspects implements the Visitor pattern using the interface IAspect. 
+
+For building these examples you will need to get a working AWS Account and the [cdk cli](https://docs.aws.amazon.com/cdk/v2/guide/home.html) installed with the appropriate permissions.
 
 ## A policy for block the creation of buckets without encryption
 
