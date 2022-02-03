@@ -15,5 +15,10 @@ Tags.of(stack).add("projectId", "my-project")
 Tags.of(stack).add('active', 'yes')
 Tags.of(stack).add('hasBudget', 'yes')
 
-Aspects.of(stack).add(new OpaChecker());
+stack.node.addMetadata("repoTag", "v0.0.0")
+stack.node.addMetadata("errorBudget", 100)
+
+Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
+
 Aspects.of(stack).add(new BucketEncryptionChecker());

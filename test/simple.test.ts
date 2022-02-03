@@ -20,28 +20,24 @@ test('S3 Bucket Not Created Without Encryption', () => {
   
   cdk.Aspects.of(stack).add(new BucketEncryptionChecker());
   
-  stack.node.validate()
     // THEN  
   Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'AWS::S3::Bucket::NoEncryption');
 });
 
-test('OPA Bundle Test Not Allowed', async () => {
-  
-  //expect.assertions(1);
-
+test('Financial Policy Not Allowed', async () => {
   const app = new cdk.App();
   
   // WHEN
   let stack = new Simple.SimpleStack(app, 'MyTestStack');
 
-  cdk.Aspects.of(stack).add(new OpaChecker());
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
 
   // THEN  
-  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::NotAllowed')
+  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyFinancial::NotAllowed')
 });
 
 
-test('OPA Bundle Test Allowed', async () => {
+test('Financial Policy Allowed', async () => {
   
   //expect.assertions(1);
 
@@ -52,9 +48,44 @@ test('OPA Bundle Test Allowed', async () => {
 
   cdk.Tags.of(stack).add('active', 'yes')
   cdk.Tags.of(stack).add('hasBudget', 'yes')
-
-  cdk.Aspects.of(stack).add(new OpaChecker());
+  
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
 
   // THEN  
-  Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::Allowed')
+  Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyFinancial::Allowed')
+  expect(stack).toHaveResource('AWS::S3::Bucket')
 });
+
+test('Change Policy Not Allowed', async () => {
+  
+  //expect.assertions(1);
+
+  const app = new cdk.App();
+  
+  // WHEN
+  let stack = new Simple.SimpleStack(app, 'MyTestStack');
+
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+
+  // THEN  
+  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyChange::NotAllowed')
+});
+
+test('Change Policy Allowed', async () => {
+  
+  //expect.assertions(1);
+
+  const app = new cdk.App();
+  
+  // WHEN
+  let stack = new Simple.SimpleStack(app, 'MyTestStack');
+
+  stack.node.addMetadata("repoTag", "test-opa-change")
+  stack.node.addMetadata("errorBudget", 100)
+
+  cdk.Aspects.of(stack).add(new OpaChecker('MockBin', 'https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7'));
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+  
+  // THEN  
+  Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyChange::Allowed')
+}); 
