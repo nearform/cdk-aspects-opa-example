@@ -1,6 +1,7 @@
 import '@aws-cdk/assert/jest';
 import * as cdk from 'aws-cdk-lib';
-import { Match, Template, Annotations } from 'aws-cdk-lib/assertions';
+import { Annotations } from 'aws-cdk-lib/assertions';
+import { OpaChecker } from '../lib/opa-checker';
 import { BucketEncryptionChecker } from '../lib/s3-checker';
 import * as Simple from '../lib/simple-stack';
 
@@ -22,4 +23,16 @@ test('S3 Bucket Not Created Without Encryption', () => {
   stack.node.validate()
     // THEN  
   Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'AWS::S3::Bucket::NoEncryption');
+});
+
+test('OPA Bundle Test', () => {
+  
+  const app = new cdk.App();
+  // WHEN
+  let stack = new Simple.SimpleStack(app, 'MyTestStack');
+
+  cdk.Aspects.of(stack).add(new OpaChecker());
+
+  // THEN  
+  Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::NotAllowed');  
 });
