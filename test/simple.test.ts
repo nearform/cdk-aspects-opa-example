@@ -1,7 +1,7 @@
 import '@aws-cdk/assert/jest';
 import * as cdk from 'aws-cdk-lib';
 import { Annotations } from 'aws-cdk-lib/assertions';
-import { OpaChecker } from '../lib/opa-checker';
+import { DefaultOpaClient, OpaChecker } from '../lib/opa-checker';
 import { BucketEncryptionChecker } from '../lib/s3-checker';
 import * as Simple from '../lib/simple-stack';
 
@@ -30,7 +30,7 @@ test('Financial Policy Not Allowed', async () => {
   // WHEN
   let stack = new Simple.SimpleStack(app, 'MyTestStack');
 
-  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', new DefaultOpaClient('http://localhost:8181/v1/data/policy/financial')));
 
   // THEN  
   Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyFinancial::NotAllowed')
@@ -49,7 +49,8 @@ test('Financial Policy Allowed', async () => {
   cdk.Tags.of(stack).add('active', 'yes')
   cdk.Tags.of(stack).add('hasBudget', 'yes')
   
-  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', 'http://localhost:8181/v1/data/policy/financial'));
+  cdk.Aspects.of(stack).add(new OpaChecker('MockBin', new DefaultOpaClient('https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7')));
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyFinancial', new DefaultOpaClient('http://localhost:8181/v1/data/policy/financial')));
 
   // THEN  
   Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyFinancial::Allowed')
@@ -65,7 +66,7 @@ test('Change Policy Not Allowed', async () => {
   // WHEN
   let stack = new Simple.SimpleStack(app, 'MyTestStack');
 
-  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', new DefaultOpaClient('http://localhost:8181/v1/data/policy/change')));
 
   // THEN  
   Annotations.fromStack(stack).hasError('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyChange::NotAllowed')
@@ -83,8 +84,8 @@ test('Change Policy Allowed', async () => {
   stack.node.addMetadata("repoTag", "test-opa-change")
   stack.node.addMetadata("errorBudget", 0.1)
 
-  cdk.Aspects.of(stack).add(new OpaChecker('MockBin', 'https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7'));
-  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', 'http://localhost:8181/v1/data/policy/change'));
+  cdk.Aspects.of(stack).add(new OpaChecker('MockBin', new DefaultOpaClient('https://mockbin.org/bin/0ad461b4-4661-4a13-8070-44ed95f8a6a7')));
+  cdk.Aspects.of(stack).add(new OpaChecker('PolicyChange', new DefaultOpaClient('http://localhost:8181/v1/data/policy/change')));
   
   // THEN  
   Annotations.fromStack(stack).hasInfo('/MyTestStack/MyBucket/InsecureBucket/Resource', 'OpaChecker::PolicyChange::Allowed')
