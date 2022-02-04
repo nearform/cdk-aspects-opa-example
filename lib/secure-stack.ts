@@ -11,11 +11,10 @@ export class SecureStack extends cdk.Stack {
 
 export class SecureBucket extends Construct {
   constructor(scope: Construct, id: string) {
-    super(scope, id);   
+    super(scope, id);
     const secureBucket = new cdk.aws_s3.Bucket(this, "SecureBucket", {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED
     });
   }
- }
- 
+}

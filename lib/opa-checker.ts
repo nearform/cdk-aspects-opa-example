@@ -6,14 +6,14 @@ export class OpaChecker implements IAspect {
 
   private id = ''
   private opClient: IOpaClient
-  
-  constructor(id: string, opClient: IOpaClient){
+
+  constructor(id: string, opClient: IOpaClient) {
     this.id = id
     this.opClient = opClient
   }
 
   public visit(node: IConstruct): void {
-  
+
     const data = this.buildData(node)
 
     this.loadTagsData(node, data)
@@ -25,25 +25,25 @@ export class OpaChecker implements IAspect {
       }
     )
 
-    if(opaResult.error){
+    if (opaResult.error) {
       Annotations.of(node).addError(`OpaChecker::${this.id}::${opaResult.errorMsg}`);
     }
-    
-    if(opaResult.result.allow){
+
+    if (opaResult.result.allow) {
       Annotations.of(node).addInfo(`OpaChecker::${this.id}::Allowed`);
-    }else{
+    } else {
       Annotations.of(node).addError(`OpaChecker::${this.id}::NotAllowed`);
     }
   }
 
-  private loadTagsData(node: IConstruct, data: any){
-    if (TagManager.isTaggable(node)){
+  private loadTagsData(node: IConstruct, data: any) {
+    if (TagManager.isTaggable(node)) {
       data.tags = node.tags.tagValues()
     }
   }
-  
-  private loadCnfResourceData(node: IConstruct, data: any){
-    if (node instanceof CfnResource){
+
+  private loadCnfResourceData(node: IConstruct, data: any) {
+    if (node instanceof CfnResource) {
       data.type = node.cfnResourceType
       data.metadata = node.node.metadata
       data.stackMetadata = node.stack.node.metadata
@@ -51,12 +51,12 @@ export class OpaChecker implements IAspect {
     }
   }
 
-  private buildData(node: IConstruct): any{
+  private buildData(node: IConstruct): any {
     return {
-        id: node.node.id,
-        addr: node.node.addr,
-        path: node.node.path,
-        metadata: node.node.metadata        
+      id: node.node.id,
+      addr: node.node.addr,
+      path: node.node.path,
+      metadata: node.node.metadata
     }
   }
 }
@@ -68,32 +68,32 @@ export interface IOpaClient {
 export class DefaultOpaClient implements IOpaClient {
 
   private policyEndpoint = ''
-  
-  constructor(policyEndpoint: string){
+
+  constructor(policyEndpoint: string) {
     this.policyEndpoint = policyEndpoint
   }
 
   submit(data: any): any {
 
-    try{
+    try {
       var res = syncRequest.default('POST', this.policyEndpoint, {
         json: data
       });
-  
-      if(res.statusCode > 399){
+
+      if (res.statusCode > 399) {
         return {
           error: true,
           errorMsg: `DefaultOpaClient::HttpError_${res.statusCode}`
         }
       }
-  
+
       return JSON.parse(res.getBody('utf8'));
 
-    }catch(e){
+    } catch (e) {
       return {
         error: true,
         errorMsg: (e as ExecException).message
       }
-    }    
+    }
   }
 }
