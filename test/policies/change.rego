@@ -13,3 +13,4 @@ allow {
 	errorBudget.type == "errorBudget"
 	errorBudget.data > 0
 }
+

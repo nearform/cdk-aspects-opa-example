@@ -1,0 +1,24 @@
+{
+    "input": {
+        "id": "Resource",
+        "addr": "c8400522ef47ac4b17b2337c6266232ef0f0bec571",
+        "path": "SimpleStack/MyBucket/SecureBucket/Resource",
+        "type": "AWS::S3::Bucket",
+        "stackMetadata": [
+            {
+                "type": "repoTag",
+                "data": "v0.0.0"
+            },
+            {
+                "type": "errorBudget",
+                "data": 100
+            }
+        ],
+        "isStack": false,
+        "tags": {
+            "active": "yes",
+            "hasBudget": "yes",
+            "projectId": "my-project"
+        }
+    }
+}

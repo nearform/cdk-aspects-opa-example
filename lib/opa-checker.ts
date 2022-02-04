@@ -19,11 +19,13 @@ export class OpaChecker implements IAspect {
     this.loadTagsData(node, data)
     this.loadCnfResourceData(node, data)
 
-    const opaResult = this.opClient.submit(
-      {
-        input: data
-      }
-    )
+    const payload =  {
+      input: data
+    }
+
+    console.log(payload)
+    
+    const opaResult = this.opClient.submit(payload)
 
     if (opaResult.error) {
       Annotations.of(node).addError(`OpaChecker::${this.id}::${opaResult.errorMsg}`);

@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "9a0a7836-f5c6-4f9e-9c2e-8269caba97df",
+		"name": "OPA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Policies Change",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"input\":{\n      \"id\":\"Resource\",\n      \"addr\":\"c8400522ef47ac4b17b2337c6266232ef0f0bec571\",\n      \"path\":\"SimpleStack/MyBucket/SecureBucket/Resource\",\n      \"type\":\"AWS::S3::Bucket\",\n      \"stackMetadata\":[\n         {\n            \"type\":\"repoTag\",\n            \"data\":\"v0.0.0\"\n         },\n         {\n            \"type\":\"errorBudget\",\n            \"data\":100\n         }\n      ],\n      \"isStack\":false,\n      \"tags\":{\n         \"active\":\"yes\",\n         \"hasBudget\":\"yes\",\n         \"projectId\":\"my-project\"\n      }\n   }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8181/v1/data/policy/change",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8181",
+					"path": [
+						"v1",
+						"data",
+						"policy",
+						"change"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Policies Financial",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"input\":{\n      \"id\":\"Resource\",\n      \"addr\":\"c8400522ef47ac4b17b2337c6266232ef0f0bec571\",\n      \"path\":\"SimpleStack/MyBucket/SecureBucket/Resource\",\n      \"type\":\"AWS::S3::Bucket\",\n      \"isStack\":false,\n      \"tags\":{\n         \"active\":\"yes\",\n         \"hasBudget\":\"yes\",\n         \"projectId\":\"my-project\"\n      }\n   }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8181/v1/data/policy/financial",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8181",
+					"path": [
+						"v1",
+						"data",
+						"policy",
+						"financial"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
